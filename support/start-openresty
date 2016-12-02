@@ -9,7 +9,11 @@ rm -f $psmgr
 mkfifo $psmgr
 
 # Generate our configuration file.
-erb nginx.conf.erb > config/nginx.conf
+if [ ! -d nginx.conf.erb ]; then
+	echo 'buildpack=openresty at=fail reason=missing-config message="You must place an nginx.conf.erb in the root directory"'
+	exit 1
+fi
+erb nginx.conf.erb > conf/nginx.conf
 
 #Initialize log directory.
 
