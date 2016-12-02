@@ -30,7 +30,7 @@ echo 'buildpack=openresty at=logs-initialized'
 	#We also expect a socket to be at /tmp/nginx.socket.
 
 	echo 'buildpack=openresty at=nginx-start'
-	bin/nginx -p . -c conf/nginx.conf
+	nginx -p . -c conf/nginx.conf
 	echo 'nginx' >$psmgr
 ) &
 
