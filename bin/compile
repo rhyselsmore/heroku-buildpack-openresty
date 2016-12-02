@@ -59,7 +59,7 @@ cp -r $CACHED_VENDORED/* $BUILD_VENDORED &> /dev/null || true
 
 # Copy the openresty start file
 
-cp ../support/start-openresty $BUILD_VENDORED/bin
+cp support/start-openresty $BUILD_VENDORED/bin
 chmod +x $BUILD_VENDORED/bin/start-openresty
 
 # Add nginx to the $PATH
