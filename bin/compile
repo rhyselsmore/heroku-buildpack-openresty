@@ -38,20 +38,23 @@ echo "Using openresty version: ${OPENRESTY_VERSION}" | indent
 VENDORED_OPENRESTY="vendor/openresty"
 VENDORED_VERSION="$VENDORED_OPENRESTY/.version"
 
-if [ ! -d $VENDORED_VERSION ]; then
-  rm -rf "${CACHE_DIR}/${VENDORED_OPENRESTY}"
+CACHED_VENDORED="$CACHE_DIR/$VENDORED_OPENRESTY"
+BUILD_VENDORED="$BUILD_DIR/$VENDORED_OPENRESTY"
 
-  mkdir -p "${CACHE_DIR}/${VENDORED_OPENRESTY}"
+if [ ! -d $CACHED_VENDORED/.version ]; then
+  rm -rf "$CACHED_VENDORED"
+
+  mkdir -p "$CACHED_VENDORED"
 
   # vendor openresty into the slug
   echo "-----> Fetching and vendoring openresty into slug" | indent
 
-  curl $PACKAGE -s -o - | tar xzf - -C "${CACHE_DIR}/${VENDORED_OPENRESTY}"
-  echo $OPENRESTY_VERSION > $VENDORED_VERSION
+  curl $PACKAGE -s -o - | tar xvf - -C "$CACHED_VENDORED"
+  echo $OPENRESTY_VERSION > $CACHED_VENDORED/.version
 fi
 
-mkdir -p $BUILD_DIR/$VENDORED_OPENRESTY
-cp -r $CACHE_DIR/$VENDORED_OPENRESTY/* $BUILD_DIR/$VENDORED_OPENRESTY &> /dev/null || true
+mkdir -p $BUILD_VENDORED
+cp -r $CACHED_VENDORED/* $BUILD_VENDORED &> /dev/null || true
 
 # Add nginx to the $PATH
 mkdir -p $BUILD_DIR/.profile.d
