@@ -59,7 +59,7 @@ cp -r $CACHED_VENDORED/* $BUILD_VENDORED &> /dev/null || true
 # Add nginx to the $PATH
 mkdir -p $BUILD_DIR/.profile.d
 echo 'PATH=$PATH:$HOME/vendor/openresty/nginx/sbin' > $BUILD_DIR/.profile.d/openresty.sh
-echo '$LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/app/vendor/openresty/luajit/lib' >> > $BUILD_DIR/.profile.d/openresty.sh
+echo '$LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/app/vendor/openresty/luajit/lib' >> $BUILD_DIR/.profile.d/openresty.sh
 
 # fin.
 echo "-----> Vendoring openresty libraries done" | indent
