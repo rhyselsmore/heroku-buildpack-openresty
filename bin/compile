@@ -20,7 +20,7 @@ function indent() {
 set -e
 
 # Debug
-set -x
+# set -x
 
 # Configuration
 S3_BUCKET="heroku-security-buildpacks"
@@ -68,4 +68,4 @@ echo 'PATH=$PATH:$HOME/vendor/openresty/nginx/sbin:$HOME/vendor/openresty/bin' >
 echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/app/vendor/openresty/luajit/lib' >> $BUILD_DIR/.profile.d/openresty.sh
 
 # fin.
-echo "-----> Vendoring openresty libraries done" | indent
+echo "-----> Vendoring openresty done"
