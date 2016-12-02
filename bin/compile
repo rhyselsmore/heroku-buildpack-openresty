@@ -49,7 +49,7 @@ if [ ! -d $CACHED_VENDORED/.version ]; then
   # vendor openresty into the slug
   echo "-----> Fetching and vendoring openresty into slug" | indent
 
-  curl $PACKAGE -s -o - | tar zxvf - -C "$CACHED_VENDORED"
+  curl $PACKAGE -s -o - | tar zxf - -C "$CACHED_VENDORED"
   echo $OPENRESTY_VERSION > $CACHED_VENDORED/.version
 fi
 
