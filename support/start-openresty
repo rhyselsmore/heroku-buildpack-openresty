@@ -13,7 +13,7 @@ if [ ! -f nginx.conf.erb ]; then
 	echo 'buildpack=openresty at=fail reason=missing-config message="You must place an nginx.conf.erb in the root directory"'
 	exit 1
 fi
-erb nginx.conf.erb > conf/nginx.conf
+erb nginx.conf.erb > nginx.conf
 
 #Initialize log directory.
 
@@ -34,7 +34,7 @@ echo 'buildpack=openresty at=logs-initialized'
 	#We also expect a socket to be at /tmp/nginx.socket.
 
 	echo 'buildpack=openresty at=nginx-start'
-	nginx -p . -c conf/nginx.conf
+	nginx -p . -c nginx.conf
 	echo 'nginx' >$psmgr
 ) &
 
