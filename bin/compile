@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir> <env-dir>
+
+# Functions
+
+function error() {
+  echo " !     $*" >&2
+  exit 1
+}
+
+function indent() {
+  c='s/^/       /'
+  case $(uname) in
+    Darwin) sed -l "$c";;
+    *)      sed -u "$c";;
+  esac
+}
+
+# Fail Fast
+set -e
+
+# Debug
+set -x
+
+# Configuration
+S3_BUCKET="heroku-security-buildpacks"
+STACK="cedar-14"
+OPENRESTY_VERSION="1.11.2.1"
+PACKAGE="https://${S3_BUCKET}.s3.amazonaws.com/${STACK}/openresty-$OPENRESTY_VERSION.tar.gz"
+
+# Params
+BUILD_DIR=$1
+CACHE_DIR=$2
+
+echo "Using openresty version: ${OPENRESTY_VERSION}" | indent
+
+# vendor directories
+VENDORED_OPENRESTY="vendor/openresty"
+
+if [ ! -d $CACHE_DIR/$VENDORED_OPENRESTY ]; then
+  rm -rf "${CACHE_DIR}/${VENDORED_OPENRESTY}"
+
+  mkdir -p "${CACHE_DIR}/${VENDORED_OPENRESTY}"
+
+  # vendor openresty into the slug
+  echo "-----> Fetching and vendoring openresty into slug" | indent
+
+  curl $PACKAGE -s -o - | tar xzf - -C "${CACHE_DIR}/${VENDORED_OPENRESTY}"
+fi
+
+mkdir -p $BUILD_DIR/$VENDORED_OPENRESTY
+cp -r $CACHE_DIR/$VENDORED_OPENRESTY/* $BUILD_DIR/$VENDORED_OPENRESTY &> /dev/null || true
+
+# Add nginx to the $PATH
+mkdir -p $BUILD_DIR/.profile.d
+echo 'PATH=$PATH:$HOME/vendor/openresty/nginx/sbin' > $BUILD_DIR/.profile.d/openresty.sh
+
+# fin.
+echo "-----> Vendoring openresty libraries done" | indent
