@@ -53,12 +53,18 @@ if [ ! -d $CACHED_VENDORED/.version ]; then
   echo $OPENRESTY_VERSION > $CACHED_VENDORED/.version
 fi
 
+# Copy our cached openresty version
 mkdir -p $BUILD_VENDORED
 cp -r $CACHED_VENDORED/* $BUILD_VENDORED &> /dev/null || true
 
+# Copy the openresty start file
+
+cp ../support/start-openresty $BUILD_VENDORED/bin
+chmod +x $BUILD_VENDORED/bin/start-openresty
+
 # Add nginx to the $PATH
 mkdir -p $BUILD_DIR/.profile.d
-echo 'PATH=$PATH:$HOME/vendor/openresty/nginx/sbin' > $BUILD_DIR/.profile.d/openresty.sh
+echo 'PATH=$PATH:$HOME/vendor/openresty/nginx/sbin:$HOME/vendor/openresty/bin' > $BUILD_DIR/.profile.d/openresty.sh
 echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/app/vendor/openresty/luajit/lib' >> $BUILD_DIR/.profile.d/openresty.sh
 
 # fin.

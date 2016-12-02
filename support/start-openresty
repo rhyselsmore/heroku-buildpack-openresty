@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+echo 'buildpack=openresty at=start'
+
+# Initialize our readers
+
+psmgr=/tmp/nginx-buildpack-wait
+rm -f $psmgr
+mkfifo $psmgr
+
+# Generate our configuration file.
+erb nginx.conf.erb > config/nginx.conf
+
+#Initialize log directory.
+
+mkdir -p logs/nginx
+touch logs/nginx/access.log logs/nginx/error.log
+echo 'buildpack=openresty at=logs-initialized'
+
+#Start log redirection.
+(
+	#Redirect OpenResty logs to stdout.
+	tail -qF -n 0 logs/nginx/*.log
+	echo 'logs' >$psmgr
+) &
+
+#Start OpenResty
+(
+	#We expect nginx to run in foreground.
+	#We also expect a socket to be at /tmp/nginx.socket.
+
+	echo 'buildpack=openresty at=nginx-start'
+	bin/nginx -p . -c conf/nginx.conf
+	echo 'nginx' >$psmgr
+) &
+
+read exit_process <$psmgr
+echo "buildpack=openresty at=exit process=$exit_process"
+exit 1
