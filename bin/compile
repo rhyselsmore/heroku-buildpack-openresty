@@ -36,8 +36,9 @@ echo "Using openresty version: ${OPENRESTY_VERSION}" | indent
 
 # vendor directories
 VENDORED_OPENRESTY="vendor/openresty"
+VENDORED_VERSION="$VENDORED_OPENRESTY/.version"
 
-if [ ! -d $CACHE_DIR/$VENDORED_OPENRESTY ]; then
+if [ ! -d $VENDORED_VERSION ]; then
   rm -rf "${CACHE_DIR}/${VENDORED_OPENRESTY}"
 
   mkdir -p "${CACHE_DIR}/${VENDORED_OPENRESTY}"
@@ -46,6 +47,7 @@ if [ ! -d $CACHE_DIR/$VENDORED_OPENRESTY ]; then
   echo "-----> Fetching and vendoring openresty into slug" | indent
 
   curl $PACKAGE -s -o - | tar xzf - -C "${CACHE_DIR}/${VENDORED_OPENRESTY}"
+  echo $OPENRESTY_VERSION > $VENDORED_VERSION
 fi
 
 mkdir -p $BUILD_DIR/$VENDORED_OPENRESTY
