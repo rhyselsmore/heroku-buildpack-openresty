@@ -32,10 +32,9 @@ echo 'buildpack=openresty at=logs-initialized'
 (
 	#Take the command passed to this bin and start it.
 	#E.g. bin/start-openresty bundle exec unicorn -c config/unicorn.rb
-        COMMAND=${@:$n}
-	if [ -n "$COMMAND" ]; then
-		echo "buildpack=openresty at=start-app cmd=$COMMAND"
-		$COMMAND
+	if [ -n "$APP_COMMAND" ]; then
+		echo "buildpack=openresty at=start-app cmd=$APP_COMMAND"
+		$APP_COMMAND
 		echo 'app' >$psmgr
 	fi
 ) &
@@ -45,7 +44,7 @@ echo 'buildpack=openresty at=logs-initialized'
 	#We expect nginx to run in foreground.
 	#We also expect a socket to be at /tmp/nginx.socket.
 
-	echo 'buildpack=openresty at=nginx-start'
+	echo 'buildpack=openresty at=openresty-start'
 	nginx -p . -c nginx.conf
 	echo 'nginx' >$psmgr
 ) &
