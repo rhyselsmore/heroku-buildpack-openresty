@@ -28,6 +28,18 @@ echo 'buildpack=openresty at=logs-initialized'
 	echo 'logs' >$psmgr
 ) &
 
+#Start App Server
+(
+	#Take the command passed to this bin and start it.
+	#E.g. bin/start-openresty bundle exec unicorn -c config/unicorn.rb
+        COMMAND=${@:$n}
+	if [ -n "$COMMAND" ]; then
+		echo "buildpack=openresty at=start-app cmd=$COMMAND"
+		$COMMAND
+		echo 'app' >$psmgr
+	fi
+) &
+
 #Start OpenResty
 (
 	#We expect nginx to run in foreground.
